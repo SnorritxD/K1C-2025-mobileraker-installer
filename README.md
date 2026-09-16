@@ -13,7 +13,7 @@ An automated, persistent installation script for **Mobileraker Companion** on a 
 SSH into your rooted K1C as `root` and run the following command:
 
 ```bash
-wget --no-check-certificate -qO- [https://raw.githubusercontent.com/SnorritxD/K1C-2025-mobileraker-installer/refs/heads/main/install.sh](https://raw.githubusercontent.com/SnorritxD/K1C-2025-mobileraker-installer/refs/heads/main/install.sh) | sh
+wget --no-check-certificate -qO- https://raw.githubusercontent.com/SnorritxD/K1C-2025-mobileraker-installer/refs/heads/main/install.sh | sh
 ```
 
 **How to Uninstall / Undo Installation**
