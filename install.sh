@@ -1,5 +1,5 @@
 #!/bin/sh
-# Mobileraker Companion Installer voor Creality K1C (2025 Model)
+# Mobileraker Companion Installer for Creality K1C (2025 Model)
 
 set -e
 
@@ -17,35 +17,35 @@ CONF_FILE="$CONFIG_DIR/mobileraker.conf"
 MOONRAKER_CONF="$CONFIG_DIR/moonraker.conf"
 REPO_URL="https://github.com/Clon1998/mobileraker_companion.git"
 
-# 1. Mappenstructuur aanmaken op de permanente opslag
-echo "[1/6] Mappen aanmaken op /usr/data/..."
+# 1. Create directory structure on persistent storage
+echo "[1/6] Creating directories in /usr/data/..."
 mkdir -p "$CONFIG_DIR" "$LOG_DIR" "$INIT_DIR"
 
-# 2. Repository klonen
+# 2. Clone repository
 if [ ! -d "$REPO_DIR" ]; then
-    echo "[2/6] Mobileraker repository klonen..."
+    echo "[2/6] Cloning Mobileraker repository..."
     git clone "$REPO_URL" "$REPO_DIR"
 else
-    echo "[2/6] Repository bestaat al op $REPO_DIR."
+    echo "[2/6] Repository already exists at $REPO_DIR."
 fi
 
-# 3. Python Virtual Environment aanmaken
+# 3. Create Python Virtual Environment
 if [ ! -d "$ENV_DIR" ]; then
-    echo "[3/6] Python Virtual Environment opbouwen..."
+    echo "[3/6] Setting up Python Virtual Environment..."
     python3 -m venv "$ENV_DIR"
-    echo "      Afhankelijkheden installeren..."
+    echo "      Installing dependencies..."
     if [ -f "$REPO_DIR/scripts/mobileraker-requirements.txt" ]; then
         "$ENV_DIR/bin/pip" install --no-cache-dir -r "$REPO_DIR/scripts/mobileraker-requirements.txt"
     elif [ -f "$REPO_DIR/requirements.txt" ]; then
         "$ENV_DIR/bin/pip" install --no-cache-dir -r "$REPO_DIR/requirements.txt"
     fi
 else
-    echo "[3/6] Virtual Environment bestaat al op $ENV_DIR."
+    echo "[3/6] Virtual Environment already exists at $ENV_DIR."
 fi
 
-# 4. mobileraker.conf aanmaken in Fluidd config map
+# 4. Create mobileraker.conf in Fluidd config directory
 if [ ! -f "$CONF_FILE" ]; then
-    echo "[4/6] mobileraker.conf aanmaken voor Fluidd/Mainsail..."
+    echo "[4/6] Creating mobileraker.conf for Fluidd/Mainsail..."
     cat << 'EOF' > "$CONF_FILE"
 [main]
 config_version = 1
@@ -55,11 +55,11 @@ moonraker_uri = ws://127.0.0.1:7125/websocket
 moonraker_api_key = False
 EOF
 else
-    echo "[4/6] mobileraker.conf bestaat al."
+    echo "[4/6] mobileraker.conf already exists."
 fi
 
-# 5. Permanent opstartscript aanmaken op /opt/etc/init.d/
-echo "[5/6] Opstartscript schrijven naar $INIT_SCRIPT..."
+# 5. Create persistent startup script in /opt/etc/init.d/
+echo "[5/6] Writing startup script to $INIT_SCRIPT..."
 cat << 'EOF' > "$INIT_SCRIPT"
 #!/bin/sh
 
@@ -84,10 +84,10 @@ EOF
 
 chmod +x "$INIT_SCRIPT"
 
-# 6. Update Manager toevoegen aan moonraker.conf
+# 6. Add Update Manager entry to moonraker.conf
 if [ -f "$MOONRAKER_CONF" ]; then
     if ! grep -q "\[update_manager mobileraker\]" "$MOONRAKER_CONF"; then
-        echo "[6/6] Update Manager toevoegen aan moonraker.conf..."
+        echo "[6/6] Adding Update Manager entry to moonraker.conf..."
         cat << 'EOF' >> "$MOONRAKER_CONF"
 
 [update_manager mobileraker]
@@ -103,21 +103,21 @@ EOF
     fi
 fi
 
-# Service starten
-echo "Mobileraker Companion starten..."
+# Start service
+echo "Starting Mobileraker Companion..."
 "$INIT_SCRIPT" restart
 
 sleep 2
 
-# Verificatie
+# Verification
 if ps | grep -v grep | grep -q "mobileraker.py"; then
     echo "================================================="
-    echo " INSTALLATIE GESLAAGD! (K1C 2025 Model)"
-    echo " Mobileraker draait en is aanpasbaar via Fluidd."
+    echo " INSTALLATION SUCCESSFUL! (K1C 2025 Model)"
+    echo " Mobileraker is running and editable via Fluidd."
     echo "================================================="
 else
     echo "================================================="
-    echo " WAARSCHUWING: Service kon niet automatisch starten."
-    echo " Controleer de logfile: $LOG_DIR/mobileraker.log"
+    echo " WARNING: Service failed to start automatically."
+    echo " Please check the log file: $LOG_DIR/mobileraker.log"
     echo "================================================="
 fi
