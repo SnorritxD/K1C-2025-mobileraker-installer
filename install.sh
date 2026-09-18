@@ -39,11 +39,11 @@ if [ ! -d "$ENV_DIR" ]; then
         echo "    [!] MIPS-architectuur gedetecteerd (K1-serie)."
         echo "    -------------------------------------------------"
 
-        # Install compiler and headers via Entware if available
+        # Install compiler and pre-compiled packages via Entware if available
         if command -v opkg >/dev/null 2>&1; then
-            echo "    [!] Installing required build dependencies via Entware..."
+            echo "    [!] Installing build dependencies and pre-compiled Pillow via Entware..."
             opkg update || true
-            opkg install gcc make python3-dev libjpeg zlib || true
+            opkg install gcc make python3-dev libjpeg zlib python3-pillow || true
         else
             echo "    [!] WAARSCHUWING: opkg niet gevonden. Zorg dat Entware actief is als PIP faalt."
         fi
@@ -57,6 +57,13 @@ if [ ! -d "$ENV_DIR" ]; then
 
     echo "    Installing build tools and dependencies..."
     "$ENV_DIR/bin/pip" install --no-cache-dir --upgrade pip setuptools wheel pybind11
+
+    # Copy pre-compiled Pillow from Entware to venv to bypass heavy MIPS source compilation
+    if [ -d "/opt/lib" ]; then
+        echo "    [!] Copying pre-compiled Pillow to virtual environment..."
+        cp -r /opt/lib/python3.*/site-packages/PIL* "$ENV_DIR"/lib/python3.*/site-packages/ 2>/dev/null || true
+        cp -r /opt/lib/python3.*/site-packages/Pillow* "$ENV_DIR"/lib/python3.*/site-packages/ 2>/dev/null || true
+    fi
     
     if [ -f "$REPO_DIR/scripts/mobileraker-requirements.txt" ]; then
         "$ENV_DIR/bin/pip" install --no-cache-dir -r "$REPO_DIR/scripts/mobileraker-requirements.txt"
@@ -94,7 +101,10 @@ case "$1" in
     ;;
   stop)
     echo "Stopping Mobileraker Companion..."
-    pkill -f mobileraker.py
+    PID=$(ps | grep "mobileraker.py" | grep -v grep | awk '{print $1}')
+    if [ -n "$PID" ]; then
+      kill -9 $PID 2>/dev/null || true
+    fi
     ;;
   restart)
     $0 stop
