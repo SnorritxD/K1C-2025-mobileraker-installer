@@ -3,9 +3,12 @@
 An automated, persistent installation script for Mobileraker Companion on a rooted Creality K1C (2025 Model), designed specifically for MIPS architecture compatibility and seamless Moonraker Update Manager integration.
 
 ## Features
-💾 **100% Persistent:** Installs all files on the `/usr/data/` partition to ensure everything survives system reboots. 
+💾 **100% Persistent:** Installs all files on the `/usr/data/` partition to ensure everything survives system reboots.
+
 ⚙️ **Fluidd & Mainsail Integration:** Places `mobileraker.conf` in `/usr/data/printer_data/config/` so you can manage settings directly from the web interface. 
+
 🚀 **Automatic Startup:** Generates an init script at `/opt/etc/init.d/S98mobileraker` for background service execution on boot. 
+
 🔄 **Update Manager Support & Clean Git State:** Integrates with Moonraker's Update Manager while utilizing a temporary requirements filter (`/tmp`) to prevent modifications to tracked files. This keeps your Git repository 100% clean and avoids annoying "dirty repo" or "INVALID" errors in Fluidd/Mainsail. 
 
 ## What Happens During Installation (Step-by-Step)
