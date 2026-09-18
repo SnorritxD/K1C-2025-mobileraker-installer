@@ -104,13 +104,14 @@ case "$1" in
     ;;
   stop)
     echo "Stopping Mobileraker Companion..."
-    PID=$(ps -w | grep "mobileraker" | grep -v grep | awk '{print $1}')
-    if [ -n "$PID" ]; then
-      kill -9 $PID 2>/dev/null || true
+    PIDS=$(ps -w | grep "[m]obileraker.py" | awk '{print $1}')
+    if [ -n "$PIDS" ]; then
+      kill -9 $PIDS >/dev/null 2>&1 || true
     fi
     ;;
   restart)
-    $0 stop
+    $0 stop || true
+    sleep 1
     $0 start
     ;;
   *)
@@ -141,7 +142,7 @@ fi
 
 # Start service
 echo "Starting Mobileraker Companion..."
-"$INIT_SCRIPT" restart
+"$INIT_SCRIPT" restart || true
 
 sleep 3
 
