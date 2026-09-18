@@ -32,7 +32,7 @@ rm -rf /usr/data/mobileraker_companion \
        /usr/data/mobileraker-env \
        /opt/etc/init.d/S98mobileraker \
        /usr/data/printer_data/config/mobileraker.conf
-       '''
+'''
 
 *This safely removes all installed files, virtual environments, and boot scripts without affecting your printer's firmware or Klipper setup.*
 
