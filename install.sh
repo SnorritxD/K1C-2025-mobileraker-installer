@@ -1,10 +1,10 @@
 #!/bin/sh
-# Mobileraker Companion Installer for Creality K1C (2025 Model)
+# Mobileraker Companion Installer for Creality K1C
 
 set -e
 
 echo "================================================="
-echo " Mobileraker Companion Installer - K1C (2025)   "
+echo " Mobileraker Companion Installer - K1C           "
 echo "================================================="
 
 REPO_DIR="/usr/data/mobileraker_companion"
@@ -29,18 +29,24 @@ else
     echo "[2/6] Repository already exists at $REPO_DIR."
 fi
 
-# 3. Create Python Virtual Environment (with safe fallback & build tools)
+# 3. Create Python Virtual Environment & Install Dependencies
 if [ ! -d "$ENV_DIR" ]; then
     echo "[3/6] Setting up Python Virtual Environment..."
     
-    # Check if we are on a MIPS architecture (like Creality K1 series)
-    if [ "$(uname -m)" = "mips" ] || [[ "$(uname -m)" =~ mips ]]; then
+    # Check if we are on a MIPS architecture (POSIX compliant)
+    if uname -m | grep -q "mips"; then
         echo "    -------------------------------------------------"
         echo "    [!] MIPS-architectuur gedetecteerd (K1-serie)."
-        echo "    [!] Het compileren van Python-pakketten (zoals Pillow)"
-        echo "    [!] vanaf de broncode kan 10 tot 15 minuten duren."
-        echo "    [!] Het script is NIET vastgelopen, even geduld..."
         echo "    -------------------------------------------------"
+
+        # Install compiler and headers via Entware if available
+        if command -v opkg >/dev/null 2>&1; then
+            echo "    [!] Installing required build dependencies via Entware..."
+            opkg update || true
+            opkg install gcc make python3-dev libjpeg zlib || true
+        else
+            echo "    [!] WAARSCHUWING: opkg niet gevonden. Zorg dat Entware actief is als PIP faalt."
+        fi
     fi
 
     python3 -m venv "$ENV_DIR" 2>/dev/null || {
@@ -49,13 +55,13 @@ if [ ! -d "$ENV_DIR" ]; then
         python3 -m virtualenv "$ENV_DIR"
     }
 
-    echo "      Installing build tools and dependencies..."
+    echo "    Installing build tools and dependencies..."
     "$ENV_DIR/bin/pip" install --no-cache-dir --upgrade pip setuptools wheel pybind11
     
     if [ -f "$REPO_DIR/scripts/mobileraker-requirements.txt" ]; then
-        "$ENV_DIR/bin/pip" install --no-cache-dir --no-build-isolation -r "$REPO_DIR/scripts/mobileraker-requirements.txt"
+        "$ENV_DIR/bin/pip" install --no-cache-dir -r "$REPO_DIR/scripts/mobileraker-requirements.txt"
     elif [ -f "$REPO_DIR/requirements.txt" ]; then
-        "$ENV_DIR/bin/pip" install --no-cache-dir --no-build-isolation -r "$REPO_DIR/requirements.txt"
+        "$ENV_DIR/bin/pip" install --no-cache-dir -r "$REPO_DIR/requirements.txt"
     fi
 else
     echo "[3/6] Virtual Environment already exists at $ENV_DIR."
@@ -102,7 +108,7 @@ EOF
 
 chmod +x "$INIT_SCRIPT"
 
-# 6. Add Update Manager entry to moonraker.conf
+# 6. Add Update Manager entry to moonraker.conf (without systemd managed_services)
 if [ -f "$MOONRAKER_CONF" ]; then
     if ! grep -q "\[update_manager mobileraker\]" "$MOONRAKER_CONF"; then
         echo "[6/6] Adding Update Manager entry to moonraker.conf..."
@@ -116,7 +122,6 @@ virtualenv: /usr/data/mobileraker-env
 primary_branch: main
 requirements: scripts/mobileraker-requirements.txt
 install_script: scripts/install.sh
-managed_services: mobileraker
 EOF
     fi
 fi
@@ -130,7 +135,7 @@ sleep 2
 # Verification
 if ps | grep -v grep | grep -q "mobileraker.py"; then
     echo "================================================="
-    echo " INSTALLATION SUCCESSFUL! (K1C 2025 Model)"
+    echo " INSTALLATION SUCCESSFUL! (K1C Model)"
     echo " Mobileraker is running and editable via Fluidd."
     echo "================================================="
 else
