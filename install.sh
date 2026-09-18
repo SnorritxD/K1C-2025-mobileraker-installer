@@ -65,13 +65,16 @@ if [ ! -d "$ENV_DIR" ]; then
         cp -r /opt/lib/python3.*/site-packages/[pP]illow* "$ENV_DIR"/lib/python3.*/site-packages/ 2>/dev/null || true
     fi
     
-    # Strip Pillow from requirements file so pip never attempts to download/build it
+    # Use temporary file for requirements filtering to keep Git repository clean
+    TMP_REQ="/tmp/mobileraker-requirements.txt"
     if [ -f "$REPO_DIR/scripts/mobileraker-requirements.txt" ]; then
-        sed -i '/[pP]illow/d' "$REPO_DIR/scripts/mobileraker-requirements.txt"
-        "$ENV_DIR/bin/pip" install --no-cache-dir -r "$REPO_DIR/scripts/mobileraker-requirements.txt"
+        grep -v -i "pillow" "$REPO_DIR/scripts/mobileraker-requirements.txt" > "$TMP_REQ"
+        "$ENV_DIR/bin/pip" install --no-cache-dir -r "$TMP_REQ"
+        rm -f "$TMP_REQ"
     elif [ -f "$REPO_DIR/requirements.txt" ]; then
-        sed -i '/[pP]illow/d' "$REPO_DIR/requirements.txt"
-        "$ENV_DIR/bin/pip" install --no-cache-dir -r "$REPO_DIR/requirements.txt"
+        grep -v -i "pillow" "$REPO_DIR/requirements.txt" > "$TMP_REQ"
+        "$ENV_DIR/bin/pip" install --no-cache-dir -r "$TMP_REQ"
+        rm -f "$TMP_REQ"
     fi
 else
     echo "[3/6] Virtual Environment already exists at $ENV_DIR."
