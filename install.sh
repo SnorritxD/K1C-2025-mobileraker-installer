@@ -58,16 +58,19 @@ if [ ! -d "$ENV_DIR" ]; then
     echo "    Installing build tools and dependencies..."
     "$ENV_DIR/bin/pip" install --no-cache-dir --upgrade pip setuptools wheel pybind11
 
-    # Copy pre-compiled Pillow from Entware to venv to bypass heavy MIPS source compilation
+    # Copy pre-compiled Pillow from Entware to venv (both lowercase and uppercase metadata)
     if [ -d "/opt/lib" ]; then
         echo "    [!] Copying pre-compiled Pillow to virtual environment..."
         cp -r /opt/lib/python3.*/site-packages/PIL* "$ENV_DIR"/lib/python3.*/site-packages/ 2>/dev/null || true
-        cp -r /opt/lib/python3.*/site-packages/Pillow* "$ENV_DIR"/lib/python3.*/site-packages/ 2>/dev/null || true
+        cp -r /opt/lib/python3.*/site-packages/[pP]illow* "$ENV_DIR"/lib/python3.*/site-packages/ 2>/dev/null || true
     fi
     
+    # Strip Pillow from requirements file so pip never attempts to download/build it
     if [ -f "$REPO_DIR/scripts/mobileraker-requirements.txt" ]; then
+        sed -i '/[pP]illow/d' "$REPO_DIR/scripts/mobileraker-requirements.txt"
         "$ENV_DIR/bin/pip" install --no-cache-dir -r "$REPO_DIR/scripts/mobileraker-requirements.txt"
     elif [ -f "$REPO_DIR/requirements.txt" ]; then
+        sed -i '/[pP]illow/d' "$REPO_DIR/requirements.txt"
         "$ENV_DIR/bin/pip" install --no-cache-dir -r "$REPO_DIR/requirements.txt"
     fi
 else
