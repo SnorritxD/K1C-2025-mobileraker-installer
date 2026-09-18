@@ -29,10 +29,14 @@ else
     echo "[2/6] Repository already exists at $REPO_DIR."
 fi
 
-# 3. Create Python Virtual Environment
+# 3. Create Python Virtual Environment (with virtualenv fallback)
 if [ ! -d "$ENV_DIR" ]; then
     echo "[3/6] Setting up Python Virtual Environment..."
-    python3 -m venv "$ENV_DIR"
+    if ! python3 -m venv "$ENV_DIR" 2>/dev/null; then
+        echo "    Built-in venv not found. Installing virtualenv package..."
+        python3 -m pip install --no-cache-dir virtualenv
+        python3 -m virtualenv "$ENV_DIR"
+    fi
     echo "      Installing dependencies..."
     if [ -f "$REPO_DIR/scripts/mobileraker-requirements.txt" ]; then
         "$ENV_DIR/bin/pip" install --no-cache-dir -r "$REPO_DIR/scripts/mobileraker-requirements.txt"
