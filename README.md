@@ -8,24 +8,27 @@ An automated, persistent installation script for **Mobileraker Companion** on a 
 - 🚀 **Automatic Startup:** Generates an init script at `/opt/etc/init.d/S98mobileraker` for background service execution on boot.
 - 🔄 **Update Manager Support:** Adds Mobileraker to `moonraker.conf` so you can easily update it via Fluidd or Mainsail.
 
+---
+
+> **⚠️ Belangrijke opmerking voor Creality K1 / K1C (MIPS Architectuur)**
+> Omdat de K1-serie op een MIPS-architectuur draait, zijn er geen kant-en-klare pre-compiled wheels beschikbaar voor bepaalde Python-pakketten (zoals `Pillow`). Het installatiescript compileert deze pakketten automatisch vanaf de broncode. Dit kan **10 tot 15 minuten** duren. Het lijkt daardoor tijdelijk alsof het script of `pip` stilstaat, maar dit is volkomen normaal en het proces is niet vastgelopen!
+
+---
+
 **Installation (One-Line Command)**
 
 SSH into your rooted K1C as `root` and run the following command:
 
-```bash
 wget --no-check-certificate -qO- https://raw.githubusercontent.com/SnorritxD/K1C-2025-mobileraker-installer/refs/heads/main/install.sh | sh
-```
 
 **How to Uninstall / Undo Installation**
 
 If your internet connection drops during setup, or if you want to completely remove Mobileraker Companion and start fresh, run this cleanup command via SSH:
 
-```bash
 rm -rf /usr/data/mobileraker_companion \
        /usr/data/mobileraker-env \
        /opt/etc/init.d/S98mobileraker \
        /usr/data/printer_data/config/mobileraker.conf
-```
 
 *This safely removes all installed files, virtual environments, and boot scripts without affecting your printer's firmware or Klipper setup.*
 
