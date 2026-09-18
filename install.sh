@@ -29,7 +29,7 @@ else
     echo "[2/6] Repository already exists at $REPO_DIR."
 fi
 
-# 3. Create Python Virtual Environment (with safe fallback & low memory profile)
+# 3. Create Python Virtual Environment (with safe fallback & build tools)
 if [ ! -d "$ENV_DIR" ]; then
     echo "[3/6] Setting up Python Virtual Environment..."
     python3 -m venv "$ENV_DIR" 2>/dev/null || {
@@ -38,8 +38,8 @@ if [ ! -d "$ENV_DIR" ]; then
         python3 -m virtualenv "$ENV_DIR"
     }
 
-    echo "      Installing dependencies (low memory profile)..."
-    "$ENV_DIR/bin/pip" install --no-cache-dir --upgrade pip
+    echo "      Installing build tools and dependencies..."
+    "$ENV_DIR/bin/pip" install --no-cache-dir --upgrade pip setuptools wheel
     
     if [ -f "$REPO_DIR/scripts/mobileraker-requirements.txt" ]; then
         "$ENV_DIR/bin/pip" install --no-cache-dir --no-build-isolation -r "$REPO_DIR/scripts/mobileraker-requirements.txt"
