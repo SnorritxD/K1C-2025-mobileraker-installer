@@ -10,8 +10,8 @@ An automated, persistent installation script for **Mobileraker Companion** on a 
 
 ---
 
-> **⚠️ Belangrijke opmerking voor Creality K1 / K1C (MIPS Architectuur)**
-> Omdat de K1-serie op een MIPS-architectuur draait, zijn er geen kant-en-klare pre-compiled wheels beschikbaar voor bepaalde Python-pakketten (zoals `Pillow`). Het installatiescript compileert deze pakketten automatisch vanaf de broncode. Dit kan **10 tot 15 minuten** duren. Het lijkt daardoor tijdelijk alsof het script of `pip` stilstaat, maar dit is volkomen normaal en het proces is niet vastgelopen!
+> **⚠️ Important Note for Creality K1 / K1C (MIPS Architecture)**
+> Because the K1 series runs on a MIPS architecture, there are no pre-compiled wheels available for certain Python packages (such as `Pillow`). The installation script automatically compiles these packages from source. This can take **10 to 15 minutes**. It may temporarily look like the script or `pip` is stuck, but this is completely normal and the process is not frozen!
 
 ---
 
