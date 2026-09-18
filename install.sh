@@ -32,6 +32,17 @@ fi
 # 3. Create Python Virtual Environment (with safe fallback & build tools)
 if [ ! -d "$ENV_DIR" ]; then
     echo "[3/6] Setting up Python Virtual Environment..."
+    
+    # Check if we are on a MIPS architecture (like Creality K1 series)
+    if [ "$(uname -m)" = "mips" ] || [[ "$(uname -m)" =~ mips ]]; then
+        echo "    -------------------------------------------------"
+        echo "    [!] MIPS-architectuur gedetecteerd (K1-serie)."
+        echo "    [!] Het compileren van Python-pakketten (zoals Pillow)"
+        echo "    [!] vanaf de broncode kan 10 tot 15 minuten duren."
+        echo "    [!] Het script is NIET vastgelopen, even geduld..."
+        echo "    -------------------------------------------------"
+    fi
+
     python3 -m venv "$ENV_DIR" 2>/dev/null || {
         echo "    Built-in venv not found. Installing virtualenv package..."
         python3 -m pip install --no-cache-dir virtualenv
