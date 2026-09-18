@@ -104,7 +104,7 @@ case "$1" in
     ;;
   stop)
     echo "Stopping Mobileraker Companion..."
-    PID=$(ps | grep "mobileraker.py" | grep -v grep | awk '{print $1}')
+    PID=$(ps -w | grep "mobileraker" | grep -v grep | awk '{print $1}')
     if [ -n "$PID" ]; then
       kill -9 $PID 2>/dev/null || true
     fi
@@ -143,10 +143,10 @@ fi
 echo "Starting Mobileraker Companion..."
 "$INIT_SCRIPT" restart
 
-sleep 2
+sleep 3
 
-# Verification
-if ps | grep -v grep | grep -q "mobileraker.py"; then
+# Verification (ps -w voorkomt dat BusyBox de procesnaam afkapt)
+if ps -w | grep -v grep | grep -q "mobileraker"; then
     echo "================================================="
     echo " INSTALLATION SUCCESSFUL! (K1C Model)"
     echo " Mobileraker is running and editable via Fluidd."
