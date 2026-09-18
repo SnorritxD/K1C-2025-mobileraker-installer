@@ -39,7 +39,7 @@ if [ ! -d "$ENV_DIR" ]; then
     }
 
     echo "      Installing build tools and dependencies..."
-    "$ENV_DIR/bin/pip" install --no-cache-dir --upgrade pip setuptools wheel
+    "$ENV_DIR/bin/pip" install --no-cache-dir --upgrade pip setuptools wheel pybind11
     
     if [ -f "$REPO_DIR/scripts/mobileraker-requirements.txt" ]; then
         "$ENV_DIR/bin/pip" install --no-cache-dir --no-build-isolation -r "$REPO_DIR/scripts/mobileraker-requirements.txt"
