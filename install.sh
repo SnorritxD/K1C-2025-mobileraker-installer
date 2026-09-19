@@ -36,7 +36,7 @@ if [ ! -d "$ENV_DIR" ]; then
     # Check if we are on a MIPS architecture (POSIX compliant)
     if uname -m | grep -q "mips"; then
         echo "    -------------------------------------------------"
-        echo "    [!] MIPS-architectuur gedetecteerd (K1-serie)."
+        echo "    [!] MIPS architecture detected (K1 series)."
         echo "    -------------------------------------------------"
 
         # Install compiler and pre-compiled packages via Entware if available
@@ -45,7 +45,7 @@ if [ ! -d "$ENV_DIR" ]; then
             opkg update || true
             opkg install gcc make python3-dev libjpeg zlib python3-pillow || true
         else
-            echo "    [!] WAARSCHUWING: opkg niet gevonden. Zorg dat Entware actief is als PIP faalt."
+            echo "    [!] WARNING: opkg not found. Ensure Entware is active if pip fails."
         fi
     fi
 
@@ -149,7 +149,7 @@ echo "Starting Mobileraker Companion..."
 
 sleep 3
 
-# Verification (ps -w voorkomt dat BusyBox de procesnaam afkapt)
+# Verification (ps -w prevents BusyBox from truncating process names)
 if ps -w | grep -v grep | grep -q "mobileraker"; then
     echo "================================================="
     echo " INSTALLATION SUCCESSFUL! (K1C Model)"
