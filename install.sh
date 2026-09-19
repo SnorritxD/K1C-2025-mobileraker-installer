@@ -1,10 +1,10 @@
 #!/bin/sh
-# Mobileraker Companion Installer for Creality K1C
+# Mobileraker Companion Installer for Creality K1C (2025 Model)
 
 set -e
 
 echo "================================================="
-echo " Mobileraker Companion Installer - K1C           "
+echo " Mobileraker Companion Installer - K1C (2025 Model) "
 echo "================================================="
 
 REPO_DIR="/usr/data/mobileraker_companion"
@@ -152,7 +152,7 @@ sleep 3
 # Verification (ps -w prevents BusyBox from truncating process names)
 if ps -w | grep -v grep | grep -q "mobileraker"; then
     echo "================================================="
-    echo " INSTALLATION SUCCESSFUL! (K1C Model)"
+    echo " INSTALLATION SUCCESSFUL! (K1C 2025 Model)"
     echo " Mobileraker is running and editable via Fluidd."
     echo "================================================="
 else
